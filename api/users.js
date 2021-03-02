@@ -7,7 +7,7 @@ const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
 
 // Import model User and Children
-const Users = require("../models/users");
+const { Users } = require("../models/users");
 
 const isAuthenticated = (req, res, next) => {
    if (req.headers.authorization === `Bearer ${process.env.ACCESS_TOKEN}`) {
@@ -19,34 +19,34 @@ const isAuthenticated = (req, res, next) => {
 
 // Route signup
 router.post("/users/signup", isAuthenticated, async (req, res) => {
-   console.log(req.body.email);
+   console.log(req.fields.email);
 
    try {
       // Search in the BDD.  Does a user have this email address ?
-      const user = await Users.findOne({ email: req.body.email });
+      const user = await Users.findOne({ email: req.fields.email });
 
       // If ok, return a message and do not proceed with registration
       if (user) {
          res.status(409).json({ message: "This email already has an account" });
       } else {
          // required information ?
-         if (req.body.email && req.body.password && req.body.userName) {
+         if (req.fields.email && req.fields.password && req.fields.userName) {
             const token = uid2(64);
             const salt = uid2(64);
-            const hash = SHA256(req.body.password + salt).toString(encBase64);
+            const hash = SHA256(req.fields.password + salt).toString(encBase64);
 
             // create new user
             const newUser = new User({
-               email: req.body.email,
+               email: req.fields.email,
                token: token,
                hash: hash,
                salt: salt,
                account: {
-                  userName: req.body.userName,
-                  languageDefault: req.body.languageDefault,
-                  secretCode: req.body.secretcode,
+                  userName: req.fields.userName,
+                  languageDefault: req.fields.languageDefault,
+                  secretCode: req.fields.secretcode,
                   isActif: true,
-                  tutorialSeen: req.body.tutorialSeen,
+                  tutorialSeen: req.fields.tutorialSeen,
                },
                createdAt: new Date(),
             });

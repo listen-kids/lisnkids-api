@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const jwt = require("express-jwt");
 const morgan = require("morgan");
+const formidable = require("express-formidable");
+
 const {
    errorHandler,
    ensureAuthenticated,
@@ -13,6 +15,7 @@ const {
 } = require("forest-express-mongoose");
 
 const app = express();
+app.use(formidable());
 
 const usersRoutes = require("./api/users");
 
@@ -46,7 +49,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-//app.use(usersRoutes);
+app.use(usersRoutes);
 
 app.use(
    jwt({
