@@ -15,9 +15,10 @@ const {
 } = require("forest-express-mongoose");
 
 const app = express();
-app.use(formidable());
+//app.use(formidable());
 
 const usersRoutes = require("./api/users");
+const childrensRoutes = require("./api/childrens");
 
 let allowedOrigins = [/\.forestadmin\.com$/, /localhost:\d{4}$/];
 
@@ -50,6 +51,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(usersRoutes);
+app.use(childrensRoutes);
 
 app.use(
    jwt({

@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 // Import model User and Children
-const User = require("../models/Users");
-const Children = require("../models/Children");
+const User = require("../models/users");
+const Children = require("../models/childrens");
 
 const cloudinary = require("cloudinary").v2;
 const { result } = require("lodash");

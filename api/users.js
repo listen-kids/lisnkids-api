@@ -7,8 +7,9 @@ const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
 
 // Import model User and Children
-const User = require("../models/users");
-const Children = require("../models/Children");
+//const User = require("../models/users");
+const { users } = require("../models");
+//const Children = require("../models/Children");
 
 const isAuthenticated = (req, res, next) => {
    if (req.headers.authorization === `Bearer ${process.env.ACCESS_TOKEN}`) {
@@ -19,9 +20,9 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // Route List User
-router.get("/api/users", isAuthenticated, async (req, res) => {
-   const user = await User.find();
-   res.status(200).json(user);
+router.get("/api/users", async (req, res) => {
+   const test = await users.find();
+   res.status(200).json(test);
 });
 
 // Route signup

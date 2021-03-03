@@ -6,6 +6,6 @@
     "liana_version": "7.0.1",
     "engine": "nodejs",
     "engine_version": "12.18.2",
-    "orm_version": "5.11.14"
+    "orm_version": "5.8.13"
   }
 }
