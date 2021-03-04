@@ -1,7 +1,7 @@
 module.exports = (mongoose, Mongoose) => {
    const schema = Mongoose.Schema(
       {
-         title: String,
+         titles: String,
          selected: String,
          dayNightOnly: String,
          url: String,

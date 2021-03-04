@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 // Import model User and Children
 const { avatars } = require("../models");
 
@@ -16,7 +17,7 @@ router.get("/api/avatars_all", isAuthenticated, async (req, res) => {
    res.status(200).json(avatar);
 });
 
-router.post("/api/avatars", isAuthenticated, async (req, res) => {
+router.post("/api/avatars2", async (req, res) => {
    console.log(req.fields);
    console.log("toto");
    try {

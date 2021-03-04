@@ -1,7 +1,7 @@
 module.exports = (mongoose, Mongoose) => {
    const schema = Mongoose.Schema(
       {
-         email: { type: String, unique: true },
+         email: String, //{ type: String, unique: true },
          account: {
             userName: String,
             languageDefault: String,

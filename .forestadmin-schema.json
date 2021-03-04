@@ -70,7 +70,7 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "title",
+      "field": "titles",
       "type": "String",
       "defaultValue": null,
       "enums": null,
