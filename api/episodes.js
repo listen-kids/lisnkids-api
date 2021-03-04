@@ -22,7 +22,7 @@ const isAuthenticated = (req, res, next) => {
 
 router.post("/api/add_episode", isAuthenticated, async (req, res) => {
    try {
-      const serie = await series.findById(req.fields.id);
+      const serie = await series.findById(req.body.id);
       console.log(serie);
 
       if (!serie) {
@@ -30,7 +30,7 @@ router.post("/api/add_episode", isAuthenticated, async (req, res) => {
       } else {
          if (serie.episodes.length > 0) {
             for (i = 0; i < serie.episodes.length; i++) {
-               if (serie.episodes[i].title === req.fields.title) {
+               if (serie.episodes[i].title === req.body.title) {
                   res.status(400).json({
                      message: "episode in this serie already exists",
                   });
@@ -42,12 +42,12 @@ router.post("/api/add_episode", isAuthenticated, async (req, res) => {
          const result = await cloudinary.uploader.upload(pictureToUpload);
 
          const newEpisode = new Episode({
-            title: req.fields.title,
+            title: req.body.title,
             image: result.secur_url,
-            duration: req.fields.duration,
-            author: req.fields.author,
-            description: req.fields.description,
-            audio: req.fields.audio,
+            duration: req.body.duration,
+            author: req.body.author,
+            description: req.body.description,
+            audio: req.body.audio,
             nbDownload: 0,
             createdAt: new Date(),
             series: [serie],

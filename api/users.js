@@ -18,38 +18,41 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // Route List User
-router.get("/api/users", isAuthenticated, async (req, res) => {
-   const user = await users.find();
-   res.status(200).json(user);
+router.get("/api/users", async (req, res) => {
+   console.log(req.body);
+   console.log(req.file);
+   console.log(req.body);
+   // const user = await users.find();
+   res.status(200).json("");
 });
 
 // Route signup
 router.post("/api/signup", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
-      const user = await users.findOne({ email: req.fields.email });
+      const user = await users.findOne({ email: req.body.email });
 
       // If ok, return a message and do not proceed with registration
       if (user) {
          res.status(409).json({ message: "This email already has an account" });
       } else {
          // required information ?
-         if (req.fields.email && req.fields.password && req.fields.userName) {
+         if (req.body.email && req.body.password && req.body.userName) {
             const token = uid2(64);
             const salt = uid2(64);
-            const hash = SHA256(req.fields.password + salt).toString(encBase64);
+            const hash = SHA256(req.body.password + salt).toString(encBase64);
 
             // create new user
             const newUser = new users({
-               email: req.fields.email,
+               email: req.body.email,
                token: token,
                hash: hash,
                salt: salt,
                account: {
-                  userName: req.fields.userName,
-                  guidance: req.fields.guidance,
-                  languageDefault: req.fields.languageDefault,
-                  secretCode: req.fields.secretCode,
+                  userName: req.body.userName,
+                  guidance: req.body.guidance,
+                  languageDefault: req.body.languageDefault,
+                  secretCode: req.body.secretCode,
                },
                childrens: [],
                isActif: true,
@@ -79,8 +82,8 @@ router.post("/api/signup", isAuthenticated, async (req, res) => {
 router.post("/api/update", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this Id ?
-      console.log(req.fields);
-      const user = await users.findById(req.fields._id);
+      console.log(req.body);
+      const user = await users.findById(req.body._id);
 
       // If ok, return a message and do not proceed with registration
       if (!user) {
@@ -88,25 +91,23 @@ router.post("/api/update", isAuthenticated, async (req, res) => {
       } else {
          // required information ?
          if (
-            req.fields.email ||
-            req.fields.userName ||
-            req.fields.guidance ||
-            req.fields.languageDefault ||
-            req.fields.secretCode
+            req.body.email ||
+            req.body.userName ||
+            req.body.guidance ||
+            req.body.languageDefault ||
+            req.body.secretCode
          ) {
-            req.fields.email && (user.email = req.fields.email);
-            req.fields.userName &&
-               (user.account.userName = req.fields.userName);
-            req.fields.guidance &&
-               (user.account.guidance = req.fields.guidance);
-            req.fields.languageDefault &&
-               (user.account.languageDefault = req.fields.languageDefault);
-            req.fields.secretCode &&
-               (user.account.secretCode = req.fields.secretCode);
+            req.body.email && (user.email = req.body.email);
+            req.body.userName && (user.account.userName = req.body.userName);
+            req.body.guidance && (user.account.guidance = req.body.guidance);
+            req.body.languageDefault &&
+               (user.account.languageDefault = req.body.languageDefault);
+            req.body.secretCode &&
+               (user.account.secretCode = req.body.secretCode);
 
-            if (req.fields.password) {
+            if (req.body.password) {
                const salt = uid2(64);
-               const hash = SHA256(req.fields.password + salt).toString(
+               const hash = SHA256(req.body.password + salt).toString(
                   encBase64
                );
                user.salt = salt;
@@ -130,11 +131,11 @@ router.post("/api/update", isAuthenticated, async (req, res) => {
 
 router.post("/api/signin", isAuthenticated, async (req, res) => {
    try {
-      const user = await users.findOne({ email: req.fields.email });
+      const user = await users.findOne({ email: req.body.email });
 
       if (user) {
          if (
-            SHA256(req.fields.password + user.salt).toString(encBase64) ===
+            SHA256(req.body.password + user.salt).toString(encBase64) ===
             user.hash
          ) {
             res.status(200).json({

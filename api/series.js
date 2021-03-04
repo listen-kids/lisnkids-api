@@ -22,7 +22,7 @@ const isAuthenticated = (req, res, next) => {
 router.post("/api/add_series", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this title ?
-      const serie = await series.findOne({ title: req.fields.title });
+      const serie = await series.findOne({ title: req.body.title });
 
       if (serie) {
          res.status(409).json({
@@ -33,10 +33,10 @@ router.post("/api/add_series", isAuthenticated, async (req, res) => {
          const result = await cloudinary.uploader.upload(pictureToUpload);
 
          const newSerie = new series({
-            title: req.fields.title,
+            title: req.body.title,
             image: result.secure_url,
-            author: req.fields.author,
-            description: req.fields.description,
+            author: req.body.author,
+            description: req.body.description,
             episodes: [],
             createdAt: new Date(),
          });

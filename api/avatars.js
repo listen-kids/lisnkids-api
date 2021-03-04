@@ -17,20 +17,17 @@ router.get("/api/avatars_all", isAuthenticated, async (req, res) => {
    res.status(200).json(avatar);
 });
 
-router.post("/api/avatars2", async (req, res) => {
-   console.log(req.fields);
-   console.log("toto");
+router.post("/api/avatars", async (req, res) => {
    try {
-      if (req.fields.title || req.fields.selected || req.fields.dayNightOnly) {
-         console.log(req.fields);
+      if (req.body.title || req.body.selected || req.body.dayNightOnly) {
+         console.log(req.body);
          const paramsReceive = {};
 
-         req.fields.title &&
-            (paramsReceive.title = req.fields.title.toUpperCase());
-         req.fields.selected &&
-            (paramsReceive.selected = req.fields.selected.toUpperCase());
-         req.fields.dayNIghtOnly &&
-            (paramsReceive.dayNightOnly = req.fields.dayNightOnly.toUpperCase());
+         req.body.title && (paramsReceive.title = req.body.title.toUpperCase());
+         req.body.selected &&
+            (paramsReceive.selected = req.body.selected.toUpperCase());
+         req.body.dayNIghtOnly &&
+            (paramsReceive.dayNightOnly = req.body.dayNightOnly.toUpperCase());
 
          console.log(paramsReceive);
 
