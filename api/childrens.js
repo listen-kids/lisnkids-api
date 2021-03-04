@@ -53,11 +53,6 @@ router.post("/api/select_avatar", isAuthenticated, async (req, res) => {
    } catch (error) {}
 });
 
-router.get("/api/avatars", isAuthenticated, async (req, res) => {
-   const avatar = await avatars.find();
-   res.status(200).json(avatar);
-});
-
 // Route Create Children
 router.post("/api/add_children", isAuthenticated, async (req, res) => {
    try {
@@ -166,40 +161,4 @@ router.post("/api/delete_children", isAuthenticated, async (req, res) => {
       res.status(400).json({ message: error.message });
    }
 });
-
-//////////////////////////////////////
-// reserve admin request for import avatars///------------------------------------------
-//////////////////////////////////////
-router.post("/api/add_avatars", isAuthenticated, async (req, res) => {
-   try {
-      const testFolder = "/Users/maxencederepas/Downloads/AVATARS";
-
-      const files = await readdir(testFolder);
-      for await (const file of files) {
-         const words = file.split("_");
-         let pictureToUpload = testFolder + "/" + file;
-         const result = await cloudinary.uploader.upload(pictureToUpload, {
-            folder: "/lisnkids-avatars",
-         });
-
-         let chaine1 = words[3].split(".");
-         console.log(chaine1[0]);
-
-         const newAvatar = new avatars({
-            title: words[1],
-            selected: chaine1[0],
-            dayNightOnly: words[2],
-            extension: ".png",
-            url: result.secure_url,
-         });
-         console.log(newAvatar);
-         await newAvatar.save();
-      }
-      res.status(200).json({ message: "avatar save" });
-   } catch (error) {
-      console.log(error.message);
-      res.status(400).json({ message: error.message });
-   }
-});
-
 module.exports = router;
