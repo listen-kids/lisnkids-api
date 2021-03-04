@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const jwt = require("express-jwt");
 const morgan = require("morgan");
-const formidable = require("express-formidable");
 
 const {
    errorHandler,
@@ -15,10 +14,12 @@ const {
 } = require("forest-express-mongoose");
 
 const app = express();
-//app.use(formidable());
 
+// Declare api custom
 const usersRoutes = require("./api/users");
 const childrensRoutes = require("./api/childrens");
+const seriesRoutes = require("./api/series");
+const episodesRoutes = require("./api/episodes");
 
 let allowedOrigins = [/\.forestadmin\.com$/, /localhost:\d{4}$/];
 
@@ -50,8 +51,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+// use api custom
 app.use(usersRoutes);
 app.use(childrensRoutes);
+app.use(episodesRoutes);
+app.use(seriesRoutes);
 
 app.use(
    jwt({

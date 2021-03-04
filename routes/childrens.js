@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 // Import model User and Children
-const User = require("../models/users");
-const Children = require("../models/childrens");
+const users = require("../models/users");
+const childrens = require("../models/childrens");
 
 const cloudinary = require("cloudinary").v2;
 const { result } = require("lodash");
@@ -25,16 +25,16 @@ router.post("/api/add_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
 
-      const user = await User.findById(req.fields._id).populate("children");
+      const user = await users.findById(req.fields._id).populate("childrens");
 
       if (!user) {
          res.status(409).json({ message: "User does not exist" });
       } else {
          // Test Limit 4
-         if (user.children.length < 4) {
-            if (user.children.length > 0) {
+         if (user.childrens.length < 4) {
+            if (user.childrens.length > 0) {
                for (i = 0; i < user.children.length; i++) {
-                  if (user.children[i].firstName === req.fields.firstName) {
+                  if (user.childrens[i].firstName === req.fields.firstName) {
                      res.status(400).json({
                         message: "children already exists",
                      });
@@ -45,16 +45,16 @@ router.post("/api/add_children", isAuthenticated, async (req, res) => {
             let pictureToUpload = req.files.avatar.path;
             const result = await cloudinary.uploader.upload(pictureToUpload);
 
-            const newChildren = new Children({
+            const newChildren = new childrens({
                firstName: req.fields.firstName,
                avatar: result.secure_url,
                age: req.fields.age,
                createdAt: new Date(),
             });
             await newChildren.save();
-            user.children.push(newChildren);
+            user.childrens.push(newChildren);
             user.save();
-            res.status(200).json(user.children);
+            res.status(200).json(user.childrens);
          } else {
             res.status(400).json({ message: "Limit of 4 children exceeded" });
          }
@@ -70,7 +70,7 @@ router.post("/api/update_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
 
-      const child = await Children.findById(req.fields._id);
+      const child = await childrens.findById(req.fields._id);
 
       if (!child) {
          res.status(409).json({ message: "child does not exist" });
@@ -103,12 +103,12 @@ router.post("/api/delete_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this id address ?
       console.log(req.fields);
-      const user = await User.findById(req.fields._id).populate("children");
+      const user = await users.findById(req.fields._id).populate("childrens");
 
       if (user) {
-         for (i = 0; i < user.children.length; i++) {
-            if (user.children[i].firstName === req.fields.firstName) {
-               user.children.splice(i, 1);
+         for (i = 0; i < user.childrens.length; i++) {
+            if (user.childrens[i].firstName === req.fields.firstName) {
+               user.childrens.splice(i, 1);
                user.save();
                res.status(200).json({
                   message: "children deleted",
