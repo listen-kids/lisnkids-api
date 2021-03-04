@@ -26,13 +26,18 @@ router.post("/api/avatars", async (req, res) => {
          req.body.title && (paramsReceive.title = req.body.title.toUpperCase());
          req.body.selected &&
             (paramsReceive.selected = req.body.selected.toUpperCase());
-         req.body.dayNIghtOnly &&
+         req.body.dayNightOnly &&
             (paramsReceive.dayNightOnly = req.body.dayNightOnly.toUpperCase());
 
          console.log(paramsReceive);
 
          const response = await avatars.find(paramsReceive);
-         res.json(response.url);
+
+         if (response.length > 0) {
+            res.status(200).json(response);
+         } else {
+            res.status(400).json({ message: "Not picture" });
+         }
       } else {
          // user not sent the required information? ?
          res.status(400).json({ message: "Missing parameters" });

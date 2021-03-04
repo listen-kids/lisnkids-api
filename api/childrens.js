@@ -25,40 +25,12 @@ const isAuthenticated = (req, res, next) => {
    }
 };
 
-router.post("/api/select_avatar", isAuthenticated, async (req, res) => {
-   try {
-      if (
-         req.fields.name ||
-         req.fields.selected ||
-         req.fields.only ||
-         req.fields.dayNight
-      ) {
-         console.log(req.fields);
-         const params = [];
-
-         req.fields.name && params.push({ name: `${req.fields.name}` });
-         req.fields.selected &&
-            params.push({ selected: `${req.fields.selected}` });
-         req.fields.only && params.push({ only: `${req.fields.only}` });
-         req.fields.dayNIght &&
-            params.push({ dayNight: `${req.fields.dayNight}` });
-         console.log(params);
-
-         res.status(200).json(params);
-         // const req = await Avatar.findOne({});
-      } else {
-         // user not sent the required information? ?
-         res.status(400).json({ message: "Missing parameters" });
-      }
-   } catch (error) {}
-});
-
 // Route Create Children
 router.post("/api/add_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
 
-      const user = await users.findById(req.fields._id).populate("children");
+      const user = await users.findById(req.body._id).populate("childrens");
 
       if (!user) {
          res.status(409).json({ message: "User does not exist" });
@@ -67,7 +39,7 @@ router.post("/api/add_children", isAuthenticated, async (req, res) => {
          if (user.childrens.length < 4) {
             if (user.childrens.length > 0) {
                for (i = 0; i < user.childrens.length; i++) {
-                  if (user.childrens[i].firstName === req.fields.firstName) {
+                  if (user.childrens[i].firstName === req.body.firstName) {
                      res.status(400).json({
                         message: "children already exists",
                      });
@@ -79,9 +51,9 @@ router.post("/api/add_children", isAuthenticated, async (req, res) => {
             const result = await cloudinary.uploader.upload(pictureToUpload);
 
             const newChildren = new childrens({
-               firstName: req.fields.firstName,
+               firstName: req.body.firstName,
                avatar: result.secure_url,
-               age: req.fields.age,
+               age: req.body.age,
                createdAt: new Date(),
             });
             await newChildren.save();
@@ -105,13 +77,13 @@ router.post("/api/update_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
 
-      const child = await childrens.findById(req.fields._id);
+      const child = await childrens.findById(req.body._id);
 
       if (!child) {
          res.status(409).json({ message: "child does not exist" });
       } else {
          // required information ?
-         if (req.files.avatar.path || req.fields.age || req.fields.firstName) {
+         if (req.files.avatar.path || req.body.age || req.body.firstName) {
             if (req.files.avatar.path) {
                // send picture on cloudinary
                let pictureToUpload = req.files.avatar.path;
@@ -119,12 +91,14 @@ router.post("/api/update_children", isAuthenticated, async (req, res) => {
                child.avatar = result.secure_url;
             }
 
-            req.fields.firstName && (child.firstName = req.fields.firstName);
-            req.fields.age && (child.age = req.fields.age);
+            req.body.firstName && (child.firstName = req.body.firstName);
+            req.body.age && (child.age = req.body.age);
 
             // Save in the bdd :
             await child.save();
             res.status(200).json(child);
+         } else {
+            res.status(400).json({ message: "missing parameters" });
          }
       }
    } catch (error) {
@@ -137,12 +111,12 @@ router.post("/api/update_children", isAuthenticated, async (req, res) => {
 router.post("/api/delete_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this id address ?
-      console.log(req.fields);
-      const user = await users.findById(req.fields._id).populate("childrens");
+      console.log(req.body);
+      const user = await users.findById(req.body._id).populate("childrens");
 
       if (user) {
          for (i = 0; i < user.childrens.length; i++) {
-            if (user.childrens[i].firstName === req.fields.firstName) {
+            if (user.childrens[i].firstName === req.body.firstName) {
                user.childrens.splice(i, 1);
                user.save();
                res.status(200).json({

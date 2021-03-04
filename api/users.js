@@ -19,11 +19,8 @@ const isAuthenticated = (req, res, next) => {
 
 // Route List User
 router.get("/api/users", async (req, res) => {
-   console.log(req.body);
-   console.log(req.file);
-   console.log(req.body);
-   // const user = await users.find();
-   res.status(200).json("");
+   const user = await users.find();
+   res.status(200).json(user);
 });
 
 // Route signup
@@ -59,7 +56,7 @@ router.post("/api/signup", isAuthenticated, async (req, res) => {
                createdAt: new Date(),
             });
 
-            //  save this new user in the
+            //  save this new user in the bdd
             await newUser.save();
             res.status(200).json({
                _id: newUser._id,
@@ -68,7 +65,7 @@ router.post("/api/signup", isAuthenticated, async (req, res) => {
                account: newUser.account,
             });
          } else {
-            // user not sent the required information? ?
+            // user not sent the required information?
             res.status(400).json({ message: "Missing parameters" });
          }
       }
@@ -82,7 +79,6 @@ router.post("/api/signup", isAuthenticated, async (req, res) => {
 router.post("/api/update", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this Id ?
-      console.log(req.body);
       const user = await users.findById(req.body._id);
 
       // If ok, return a message and do not proceed with registration

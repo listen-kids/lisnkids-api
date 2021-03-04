@@ -750,6 +750,21 @@
       "inverseOf": null,
       "validations": []
     }, {
+      "field": "hit",
+      "type": "Boolean",
+      "defaultValue": false,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
       "field": "image",
       "type": "String",
       "defaultValue": null,
