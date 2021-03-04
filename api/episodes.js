@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // Import model User and Children
-const Series = require("../models/series");
+const { series } = require("../models");
 
 const cloudinary = require("cloudinary").v2;
 const { result } = require("lodash");
@@ -22,7 +22,7 @@ const isAuthenticated = (req, res, next) => {
 
 router.post("/api/add_episode", isAuthenticated, async (req, res) => {
    try {
-      const serie = await Series.findById(req.fields.id);
+      const serie = await series.findById(req.fields.id);
       console.log(serie);
 
       if (!serie) {
@@ -50,7 +50,7 @@ router.post("/api/add_episode", isAuthenticated, async (req, res) => {
             audio: req.fields.audio,
             nbDownload: 0,
             createdAt: new Date(),
-            serie: [serie],
+            series: [serie],
          });
          await newEpisode.save();
          serie.episodes.push(newEpisode);
@@ -64,7 +64,7 @@ router.post("/api/add_episode", isAuthenticated, async (req, res) => {
    }
 });
 router.get("/api/episodes", isAuthenticated, async (req, res) => {
-   const serie = await Series.findById(req.query.id).populate("episodes");
+   const serie = await series.findById(req.query.id).populate("episodes");
    console.log(serie.episodes);
    if (serie) {
       res.status(200).json(serie);

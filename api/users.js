@@ -7,7 +7,7 @@ const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
 
 // Import model User and Children
-const User = require("../models/users");
+const { users } = require("../models");
 
 const isAuthenticated = (req, res, next) => {
    if (req.headers.authorization === `Bearer ${process.env.ACCESS_TOKEN}`) {
@@ -19,7 +19,7 @@ const isAuthenticated = (req, res, next) => {
 
 // Route List User
 router.get("/api/users", isAuthenticated, async (req, res) => {
-   const user = await User.find();
+   const user = await users.find();
    res.status(200).json(user);
 });
 
@@ -27,7 +27,7 @@ router.get("/api/users", isAuthenticated, async (req, res) => {
 router.post("/api/signup", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
-      const user = await User.findOne({ email: req.fields.email });
+      const user = await users.findOne({ email: req.fields.email });
 
       // If ok, return a message and do not proceed with registration
       if (user) {
@@ -40,7 +40,7 @@ router.post("/api/signup", isAuthenticated, async (req, res) => {
             const hash = SHA256(req.fields.password + salt).toString(encBase64);
 
             // create new user
-            const newUser = new User({
+            const newUser = new users({
                email: req.fields.email,
                token: token,
                hash: hash,
@@ -51,7 +51,7 @@ router.post("/api/signup", isAuthenticated, async (req, res) => {
                   languageDefault: req.fields.languageDefault,
                   secretCode: req.fields.secretCode,
                },
-               children: [],
+               childrens: [],
                isActif: true,
                createdAt: new Date(),
             });
@@ -80,7 +80,7 @@ router.post("/api/update", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this Id ?
       console.log(req.fields);
-      const user = await User.findById(req.fields._id);
+      const user = await users.findById(req.fields._id);
 
       // If ok, return a message and do not proceed with registration
       if (!user) {
@@ -130,7 +130,7 @@ router.post("/api/update", isAuthenticated, async (req, res) => {
 
 router.post("/api/signin", isAuthenticated, async (req, res) => {
    try {
-      const user = await User.findOne({ email: req.fields.email });
+      const user = await users.findOne({ email: req.fields.email });
 
       if (user) {
          if (

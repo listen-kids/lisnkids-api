@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 // Import model User and Children
-const Users = require("../models/users");
-const Childrens = require("../models/childrens");
-const Avatars = require("../models/avatars");
+const { users } = require("../models");
+const { childrens } = require("../models");
+const { avatars } = require("../models");
 
 const { readdir } = require("fs");
 
@@ -54,7 +54,7 @@ router.post("/api/select_avatar", isAuthenticated, async (req, res) => {
 });
 
 router.get("/api/avatars", isAuthenticated, async (req, res) => {
-   const avatar = await Avatars.find();
+   const avatar = await avatars.find();
    res.status(200).json(avatar);
 });
 
@@ -63,7 +63,7 @@ router.post("/api/add_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
 
-      const user = await Users.findById(req.fields._id).populate("children");
+      const user = await users.findById(req.fields._id).populate("children");
 
       if (!user) {
          res.status(409).json({ message: "User does not exist" });
@@ -83,7 +83,7 @@ router.post("/api/add_children", isAuthenticated, async (req, res) => {
             let pictureToUpload = req.files.avatar.path;
             const result = await cloudinary.uploader.upload(pictureToUpload);
 
-            const newChildren = new Childrens({
+            const newChildren = new childrens({
                firstName: req.fields.firstName,
                avatar: result.secure_url,
                age: req.fields.age,
@@ -110,7 +110,7 @@ router.post("/api/update_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
 
-      const child = await Childrens.findById(req.fields._id);
+      const child = await childrens.findById(req.fields._id);
 
       if (!child) {
          res.status(409).json({ message: "child does not exist" });
@@ -143,7 +143,7 @@ router.post("/api/delete_children", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this id address ?
       console.log(req.fields);
-      const user = await Users.findById(req.fields._id).populate("children");
+      const user = await users.findById(req.fields._id).populate("childrens");
 
       if (user) {
          for (i = 0; i < user.childrens.length; i++) {
@@ -185,7 +185,7 @@ router.post("/api/add_avatars", isAuthenticated, async (req, res) => {
          let chaine1 = words[3].split(".");
          console.log(chaine1[0]);
 
-         const newAvatar = new Avatars({
+         const newAvatar = new avatars({
             title: words[1],
             selected: chaine1[0],
             dayNightOnly: words[2],

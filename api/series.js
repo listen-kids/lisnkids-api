@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 // Import model Series
-const Series = require("../models/series");
+const { series } = require("../models");
 
 const cloudinary = require("cloudinary").v2;
 const { result } = require("lodash");
@@ -22,7 +22,7 @@ const isAuthenticated = (req, res, next) => {
 router.post("/api/add_series", isAuthenticated, async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this title ?
-      const serie = await Series.findOne({ title: req.fields.title });
+      const serie = await series.findOne({ title: req.fields.title });
 
       if (serie) {
          res.status(409).json({
@@ -32,7 +32,7 @@ router.post("/api/add_series", isAuthenticated, async (req, res) => {
          let pictureToUpload = req.files.picture.path;
          const result = await cloudinary.uploader.upload(pictureToUpload);
 
-         const newSerie = new Series({
+         const newSerie = new series({
             title: req.fields.title,
             image: result.secure_url,
             author: req.fields.author,
@@ -50,8 +50,8 @@ router.post("/api/add_series", isAuthenticated, async (req, res) => {
 });
 
 router.get("/api/series", isAuthenticated, async (req, res) => {
-   const series = await Series.find();
-   res.status(200).json(series);
+   const serie = await series.find();
+   res.status(200).json(serie);
 });
 
 module.exports = router;
