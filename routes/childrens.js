@@ -61,9 +61,9 @@ router.put(
             .then(async (recordToUpdate) => {
                 if (recordToUpdate.avatar) {
                     const result = await cloudinary.uploader.upload(
-                        recordToUpdate.avatr
+                        recordToUpdate.avatar
                     );
-                    recordToUpdate.avatr = result.secure_url;
+                    recordToUpdate.avatar = result.secure_url;
                 }
 
                 return recordUpdater.update(
