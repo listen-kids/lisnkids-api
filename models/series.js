@@ -9,10 +9,11 @@ module.exports = (mongoose, Mongoose) => {
          author: String,
          rating: Number,
          hit: { type: Boolean, default: false },
-         episodes: {
-            type: [Mongoose.Schema.Types.ObjectId],
-            ref: "episodes",
-         },
+         //episodes: {
+         //   type: [Mongoose.Schema.Types.ObjectId],
+         //   ref: "episodes",
+         //},
+         episodes: [{ type: Mongoose.Schema.Types.ObjectId, ref: "episodes" }],
          createdAt: Date,
          updatedAt: { type: Date, default: Date.now },
       },

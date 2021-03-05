@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 // Import model User and Children
 const { users } = require("../models");
 const { childrens } = require("../models");
@@ -43,6 +44,7 @@ router.post(
             res.status(409).json({ message: "User does not exist" });
          } else {
             // Test Limit 4
+
             if (user.childrens.length < 4) {
                if (user.childrens.length > 0) {
                   for (i = 0; i < user.childrens.length; i++) {
@@ -64,9 +66,12 @@ router.post(
                   createdAt: new Date(),
                });
                await newChildren.save();
-               user.childrens.push(newChildren);
-               user.save();
-               res.status(200).json(user.childrens);
+               await user.childrens.push(newChildren);
+               await user.save();
+               const user1 = await users
+                  .findById(req.fields._id)
+                  .populate("childrens");
+               res.status(200).json(user1);
             } else {
                res.status(400).json({
                   message: "Limit of 4 children exceeded",

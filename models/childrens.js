@@ -11,10 +11,14 @@ module.exports = (mongoose, Mongoose) => {
          createdAt: Date,
          updatedAt: { type: Date, default: Date.now },
 
-         historic_listens: {
-            type: [Mongoose.Schema.Types.ObjectId],
-            ref: "historic_listens",
-         },
+         //historic_listens: {
+         //   type: [Mongoose.Schema.Types.ObjectId],
+         //   ref: "historic_listens",
+         //},
+
+         historic_listens: [
+            { type: Mongoose.Schema.Types.ObjectId, ref: "historic_listens" },
+         ],
       },
       {
          timestamps: false,

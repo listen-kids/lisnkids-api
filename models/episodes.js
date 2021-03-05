@@ -15,7 +15,9 @@ module.exports = (mongoose, Mongoose) => {
 
          updatedAt: { type: Date, default: Date.now },
 
-         series: { type: [Mongoose.Schema.Types.ObjectId], ref: "series" },
+         //series: { type: [Mongoose.Schema.Types.ObjectId], ref: "series" },
+
+         series: [{ type: Mongoose.Schema.Types.ObjectId, ref: "series" }],
       },
       {
          timestamps: false,

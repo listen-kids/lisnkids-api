@@ -953,6 +953,12 @@
           "field": "guidance",
           "type": "Boolean"
         }, {
+          "field": "guidance1",
+          "type": "Boolean"
+        }, {
+          "field": "guidance2",
+          "type": "Boolean"
+        }, {
           "field": "secretCode",
           "type": "Number"
         }, {
