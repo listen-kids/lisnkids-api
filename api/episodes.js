@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const formidable = require("express-formidable");
 // Import model User and Children
 const { series } = require("../models");
 
@@ -20,50 +20,55 @@ const isAuthenticated = (req, res, next) => {
    }
 };
 
-router.post("/api/add_episode", isAuthenticated, async (req, res) => {
-   try {
-      const serie = await series.findById(req.body.id);
-      console.log(serie);
+router.post(
+   "/api/add_episode",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      try {
+         const serie = await series.findById(req.fields.id);
+         console.log(serie);
 
-      if (!serie) {
-         res.status(409).json({ message: "serie does not exist" });
-      } else {
-         if (serie.episodes.length > 0) {
-            for (i = 0; i < serie.episodes.length; i++) {
-               if (serie.episodes[i].title === req.body.title) {
-                  res.status(400).json({
-                     message: "episode in this serie already exists",
-                  });
+         if (!serie) {
+            res.status(409).json({ message: "serie does not exist" });
+         } else {
+            if (serie.episodes.length > 0) {
+               for (i = 0; i < serie.episodes.length; i++) {
+                  if (serie.episodes[i].title === req.fields.title) {
+                     res.status(400).json({
+                        message: "episode in this serie already exists",
+                     });
+                  }
                }
             }
+            // picture
+            let pictureToUpload = req.files.picture.path;
+            const result = await cloudinary.uploader.upload(pictureToUpload);
+
+            const newEpisode = new Episode({
+               title: req.fields.title,
+               image: result.secur_url,
+               duration: req.fields.duration,
+               author: req.fields.author,
+               description: req.fields.description,
+               audio: req.fields.audio,
+               nbDownload: 0,
+               createdAt: new Date(),
+               series: [serie],
+            });
+            await newEpisode.save();
+            serie.episodes.push(newEpisode);
+            await serie.save();
+
+            res.status(200).json(newEpisode);
          }
-         // picture
-         let pictureToUpload = req.files.picture.path;
-         const result = await cloudinary.uploader.upload(pictureToUpload);
-
-         const newEpisode = new Episode({
-            title: req.body.title,
-            image: result.secur_url,
-            duration: req.body.duration,
-            author: req.body.author,
-            description: req.body.description,
-            audio: req.body.audio,
-            nbDownload: 0,
-            createdAt: new Date(),
-            series: [serie],
-         });
-         await newEpisode.save();
-         serie.episodes.push(newEpisode);
-         await serie.save();
-
-         res.status(200).json(newEpisode);
+      } catch (error) {
+         console.log(error.message);
+         res.status(400).json({ message: error.message });
       }
-   } catch (error) {
-      console.log(error.message);
-      res.status(400).json({ message: error.message });
    }
-});
-router.get("/api/episodes", isAuthenticated, async (req, res) => {
+);
+router.get("/api/episodes", isAuthenticated, formidable(), async (req, res) => {
    const serie = await series.findById(req.query.id).populate("episodes");
    console.log(serie.episodes);
    if (serie) {
