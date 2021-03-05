@@ -1,130 +1,140 @@
 const express = require("express");
-const router = express.Router();
-// Import model User and Children
-const users = require("../models/users");
-const childrens = require("../models/childrens");
-
+const {
+    PermissionMiddlewareCreator,
+    RecordCreator,
+    RecordUpdater,
+} = require("forest-express-mongoose");
+const { series } = require("../models");
 const cloudinary = require("cloudinary").v2;
-const { result } = require("lodash");
+
+const router = express.Router();
 cloudinary.config({
-   cloud_name: process.env.CLOUD_NAME,
-   api_key: process.env.API_KEY,
-   api_secret: process.env.API_SECRET,
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
 });
 
-const isAuthenticated = (req, res, next) => {
-   if (req.headers.authorization === `Bearer ${process.env.ACCESS_TOKEN}`) {
-      next();
-   } else {
-      res.json({ message: "Unauthorized" });
-   }
-};
+const permissionMiddlewareCreator = new PermissionMiddlewareCreator("series");
 
-// Route Create Children
-router.post("/api/add_children", isAuthenticated, async (req, res) => {
-   try {
-      // Search in the BDD.  Does a user have this email address ?
+// This file contains the logic of every route in Forest Admin for the collection series:
+// - Native routes are already generated but can be extended/overriden - Learn how to extend a route here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/extend-a-route
+// - Smart action routes will need to be added as you create new Smart Actions - Learn how to create a Smart Action here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/actions/create-and-manage-smart-actions
 
-      const user = await users.findById(req.fields._id).populate("childrens");
+// Create a Sseries
 
-      if (!user) {
-         res.status(409).json({ message: "User does not exist" });
-      } else {
-         // Test Limit 4
-         if (user.childrens.length < 4) {
-            if (user.childrens.length > 0) {
-               for (i = 0; i < user.children.length; i++) {
-                  if (user.childrens[i].firstName === req.fields.firstName) {
-                     res.status(400).json({
-                        message: "children already exists",
-                     });
-                  }
-               }
-            }
-            // picture
-            let pictureToUpload = req.files.avatar.path;
-            const result = await cloudinary.uploader.upload(pictureToUpload);
+// Create a series - Check out our documentation for more details: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/default-routes#create-a-record
+router.post(
+    "/series",
+    permissionMiddlewareCreator.create(),
+    (request, response, next) => {
+        const recordCreator = new RecordCreator(series);
+        recordCreator
+            .deserialize(request.body)
+            .then(async (recordToCreate) => {
+                if (recordToCreate.image) {
+                    const result = await cloudinary.uploader.upload(
+                        recordToCreate.image
+                    );
+                    recordToCreate.image = result.secure_url;
+                }
 
-            const newChildren = new childrens({
-               firstName: req.fields.firstName,
-               avatar: result.secure_url,
-               age: req.fields.age,
-               createdAt: new Date(),
-            });
-            await newChildren.save();
-            user.childrens.push(newChildren);
-            user.save();
-            res.status(200).json(user.childrens);
-         } else {
-            res.status(400).json({ message: "Limit of 4 children exceeded" });
-         }
-      }
-   } catch (error) {
-      console.log(error.message);
-      res.status(400).json({ message: error.message });
-   }
-});
+                return recordCreator.create(recordToCreate);
+            })
+            .then((record) => {
+                return recordCreator.serialize(record);
+            })
+            .then((recordSerialized) => response.send(recordSerialized))
+            .catch(next);
+    }
+);
 
-// Route Update Children
-router.post("/api/update_children", isAuthenticated, async (req, res) => {
-   try {
-      // Search in the BDD.  Does a user have this email address ?
+// Update a series
+router.put(
+    "/series/:recordId",
+    permissionMiddlewareCreator.update(),
+    (request, response, next) => {
+        const recordUpdater = new RecordUpdater(series);
+        recordUpdater
+            .deserialize(request.body)
+            .then(async (recordToUpdate) => {
+                if (recordToUpdate.image) {
+                    const result = await cloudinary.uploader.upload(
+                        recordToUpdate.image
+                    );
+                    recordToUpdate.image = result.secure_url;
+                }
 
-      const child = await childrens.findById(req.fields._id);
+                return recordUpdater.update(
+                    recordToUpdate,
+                    request.params.recordId
+                );
+            })
+            .then((record) => {
+                return recordUpdater.serialize(record);
+            })
+            .then((recordSerialized) => response.send(recordSerialized))
+            .catch(next);
+    }
+);
 
-      if (!child) {
-         res.status(409).json({ message: "child does not exist" });
-      } else {
-         // required information ?
-         if (req.files.avatar.path || req.fields.age || req.fields.firstName) {
-            if (req.files.avatar.path) {
-               // send picture on cloudinary
-               let pictureToUpload = req.files.avatar.path;
-               const result = await cloudinary.uploader.upload(pictureToUpload);
-               child.avatar = result.secure_url;
-            }
+// Delete a series
+router.delete(
+    "/series/:recordId",
+    permissionMiddlewareCreator.delete(),
+    (request, response, next) => {
+        // Learn what this route does here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/default-routes#delete-a-record
+        next();
+    }
+);
 
-            req.fields.firstName && (child.firstName = req.fields.firstName);
-            req.fields.age && (child.age = req.fields.age);
+// Get a list of series
+router.get(
+    "/series",
+    permissionMiddlewareCreator.list(),
+    (request, response, next) => {
+        // Learn what this route does here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/default-routes#get-a-list-of-records
+        next();
+    }
+);
 
-            // Save in the bdd :
-            await child.save();
-            res.status(200).json(child);
-         }
-      }
-   } catch (error) {
-      console.log(error.message);
-      res.status(400).json({ message: error.message });
-   }
-});
+// Get a number of series
+router.get(
+    "/series/count",
+    permissionMiddlewareCreator.list(),
+    (request, response, next) => {
+        // Learn what this route does here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/default-routes#get-a-number-of-records
+        next();
+    }
+);
 
-// Route Delete Children
-router.post("/api/delete_children", isAuthenticated, async (req, res) => {
-   try {
-      // Search in the BDD.  Does a user have this id address ?
-      console.log(req.fields);
-      const user = await users.findById(req.fields._id).populate("childrens");
+// Get a User
+router.get(
+    "/series/:recordId(?!count)",
+    permissionMiddlewareCreator.details(),
+    (request, response, next) => {
+        // Learn what this route does here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/default-routes#get-a-record
+        next();
+    }
+);
 
-      if (user) {
-         for (i = 0; i < user.childrens.length; i++) {
-            if (user.childrens[i].firstName === req.fields.firstName) {
-               user.childrens.splice(i, 1);
-               user.save();
-               res.status(200).json({
-                  message: "children deleted",
-               });
-            }
-         }
-         res.status(200).json({
-            message: "children already deleted",
-         });
-      } else {
-         res.status(409).json({ message: "User does not deleted" });
-      }
-   } catch (error) {
-      console.log(error.message);
-      res.status(400).json({ message: error.message });
-   }
-});
+// Export a list of series
+router.get(
+    "/series.csv",
+    permissionMiddlewareCreator.export(),
+    (request, response, next) => {
+        // Learn what this route does here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/default-routes#export-a-list-of-records
+        next();
+    }
+);
+
+// Delete a list of series
+router.delete(
+    "/series",
+    permissionMiddlewareCreator.delete(),
+    (request, response, next) => {
+        // Learn what this route does here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/default-routes#delete-a-list-of-records
+        next();
+    }
+);
 
 module.exports = router;

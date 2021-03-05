@@ -24,6 +24,31 @@ router.get("/api/users", isAuthenticated, formidable(), async (req, res) => {
    res.status(200).json(user);
 });
 
+// Route List User
+router.post(
+   "/api/userCard",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      // Search in the BDD.  Does a user have this email address ?
+      try {
+         const user = await users
+            .findById(req.fields._id)
+            .populate("childrens");
+         if (!user) {
+            res.status(409).json({
+               message: "user does not exist",
+            });
+         } else {
+            res.status(200).json(user);
+         }
+      } catch (error) {
+         console.log(error.message);
+         res.status(400).json({ message: error.message });
+      }
+   }
+);
+
 // Route signup
 router.post("/api/signup", isAuthenticated, formidable(), async (req, res) => {
    try {
