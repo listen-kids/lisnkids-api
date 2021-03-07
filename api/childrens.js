@@ -55,13 +55,10 @@ router.post(
                      }
                   }
                }
-               // picture
-               let pictureToUpload = req.files.avatar.path;
-               const result = await cloudinary.uploader.upload(pictureToUpload);
 
                const newChildren = new childrens({
                   firstName: req.fields.firstName,
-                  avatar: result.secure_url,
+                  nameAvatar: req.fields.title,
                   age: req.fields.age,
                   createdAt: new Date(),
                });
