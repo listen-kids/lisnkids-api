@@ -2,7 +2,7 @@ module.exports = (mongoose, Mongoose) => {
    const schema = Mongoose.Schema(
       {
          firstName: String,
-         avatar: String,
+         nameAvatar: String,
          age: Number,
          isActif: {
             type: Boolean,
