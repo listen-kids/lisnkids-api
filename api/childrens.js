@@ -58,7 +58,7 @@ router.post(
 
                const newChildren = new childrens({
                   firstName: req.fields.firstName,
-                  nameAvatar: req.fields.title,
+                  nameAvatar: req.fields.nameAvatar,
                   age: req.fields.age,
                   createdAt: new Date(),
                });
@@ -102,15 +102,8 @@ router.post(
                req.fields.age ||
                req.fields.firstName
             ) {
-               if (req.files.avatar.path) {
-                  // send picture on cloudinary
-                  let pictureToUpload = req.files.avatar.path;
-                  const result = await cloudinary.uploader.upload(
-                     pictureToUpload
-                  );
-                  child.avatar = result.secure_url;
-               }
-
+               req.fields.nameAvatar &&
+                  (child.nameAvatar = req.req.fields.nameAvatar);
                req.fields.firstName && (child.firstName = req.fields.firstName);
                req.fields.age && (child.age = req.fields.age);
 
