@@ -11,7 +11,6 @@ module.exports = (mongoose, Mongoose) => {
                 onlySelected: String,
                 onlyUnselected: String,
             },
-            daySelected: String,
             age: Number,
             isActif: {
                 type: Boolean,
