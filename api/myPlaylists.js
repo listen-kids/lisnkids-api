@@ -88,7 +88,9 @@ router.post(
 
          const newMyplaylist = new myPlaylists({
             rank: newRank,
-            id_episodes: req.fields.idEpisode,
+            idEpisodes: episode.id,
+            title: episode.title,
+            image: episode.image,
             createdAt: rightNow,
          });
          await newMyplaylist.save();
