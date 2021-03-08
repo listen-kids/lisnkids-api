@@ -21,6 +21,7 @@ const childrensRoutes = require("./api/childrens");
 const seriesRoutes = require("./api/series");
 const episodesRoutes = require("./api/episodes");
 const avatarsRoutes = require("./api/avatars");
+const myPlaylistsRoutes = require("./api/myPlaylists");
 
 let allowedOrigins = [/\.forestadmin\.com$/, /localhost:\d{4}$/];
 
@@ -58,6 +59,7 @@ app.use(childrensRoutes);
 app.use(episodesRoutes);
 app.use(seriesRoutes);
 app.use(avatarsRoutes);
+app.use(myPlaylistsRoutes);
 
 app.use(
    jwt({

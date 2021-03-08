@@ -2,11 +2,10 @@ module.exports = (mongoose, Mongoose) => {
    const schema = Mongoose.Schema(
       {
          rank: Number,
-         id_episodes: Number,
+         id_episodes: String,
          start_listen_date: Date,
          last_listen_date: Date,
          duration: Number,
-         size: String,
          downloaded: {
             type: Boolean,
             default: false,
@@ -22,5 +21,5 @@ module.exports = (mongoose, Mongoose) => {
          timestamps: false,
       }
    );
-   return mongoose.model("historic_listens", schema, "historic_listens");
+   return mongoose.model("myPlaylists", schema, "myPlaylists");
 };

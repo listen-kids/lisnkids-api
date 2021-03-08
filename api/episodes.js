@@ -3,6 +3,7 @@ const router = express.Router();
 const formidable = require("express-formidable");
 // Import model User and Children
 const { series } = require("../models");
+const { episodes } = require("../models");
 
 const cloudinary = require("cloudinary").v2;
 const { result } = require("lodash");
@@ -45,7 +46,7 @@ router.post(
             let pictureToUpload = req.files.picture.path;
             const result = await cloudinary.uploader.upload(pictureToUpload);
 
-            const newEpisode = new Episode({
+            const newEpisode = new episodes({
                title: req.fields.title,
                image: result.secur_url,
                duration: req.fields.duration,

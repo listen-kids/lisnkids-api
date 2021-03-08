@@ -9,6 +9,7 @@ module.exports = (mongoose, Mongoose) => {
          descriptions: String,
          author: String,
          audio: String,
+         size: String,
          rating: Number,
          libInfos: String,
          nbDownload: Number,
@@ -18,7 +19,7 @@ module.exports = (mongoose, Mongoose) => {
 
          //series: { type: [Mongoose.Schema.Types.ObjectId], ref: "series" },
 
-         series: [{ type: Mongoose.Schema.Types.ObjectId, ref: "series" }],
+         //series: [{ type: Mongoose.Schema.Types.ObjectId, ref: "series" }],
       },
       {
          timestamps: false,
