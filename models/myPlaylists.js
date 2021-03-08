@@ -2,7 +2,9 @@ module.exports = (mongoose, Mongoose) => {
    const schema = Mongoose.Schema(
       {
          rank: Number,
-         id_episodes: String,
+         idEpisodes: String,
+         title: String,
+         image: String,
          start_listen_date: Date,
          last_listen_date: Date,
          duration: Number,
