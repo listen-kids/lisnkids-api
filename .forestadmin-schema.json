@@ -25,7 +25,7 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "dayNightOnly",
+      "field": "daySelected",
       "type": "String",
       "defaultValue": null,
       "enums": null,
@@ -40,7 +40,7 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "extension",
+      "field": "dayUnselected",
       "type": "String",
       "defaultValue": null,
       "enums": null,
@@ -55,7 +55,52 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "selected",
+      "field": "nightSelected",
+      "type": "String",
+      "defaultValue": null,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
+      "field": "nightUnselected",
+      "type": "String",
+      "defaultValue": null,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
+      "field": "onlySelected",
+      "type": "String",
+      "defaultValue": null,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
+      "field": "onlyUnselected",
       "type": "String",
       "defaultValue": null,
       "enums": null,
@@ -71,21 +116,6 @@
       "validations": []
     }, {
       "field": "title",
-      "type": "String",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": true,
-      "isPrimaryKey": false,
-      "isReadOnly": false,
-      "isRequired": false,
-      "isSortable": true,
-      "isVirtual": false,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "url",
       "type": "String",
       "defaultValue": null,
       "enums": null,
@@ -1155,7 +1185,7 @@
     "liana": "forest-express-mongoose",
     "liana_version": "7.0.1",
     "engine": "nodejs",
-    "engine_version": "12.18.2",
+    "engine_version": "14.15.4",
     "orm_version": "5.8.13"
   }
 }
