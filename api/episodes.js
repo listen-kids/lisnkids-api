@@ -68,14 +68,5 @@ router.post(
       }
    }
 );
-router.get("/api/episodes", isAuthenticated, formidable(), async (req, res) => {
-   const serie = await series.findById(req.query.id).populate("episodes");
-   console.log(serie.episodes);
-   if (serie) {
-      res.status(200).json(serie);
-   } else {
-      res.status(400).json({ message: "serie not found" });
-   }
-});
 
 module.exports = router;
