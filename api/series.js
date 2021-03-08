@@ -61,4 +61,23 @@ router.get("/api/series", isAuthenticated, formidable(), async (req, res) => {
    res.status(200).json(serie);
 });
 
+router.get(
+   "/api/seriesStarsList",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      const serie = await series.find({ hit: true });
+      res.status(200).json(serie);
+   }
+);
+
+router.get(
+   "/api/seriesStarsAll",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      const serie = await series.find({ hit: true }).populate("episodes");
+      res.status(200).json(serie);
+   }
+);
 module.exports = router;
