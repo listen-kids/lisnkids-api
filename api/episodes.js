@@ -74,7 +74,7 @@ router.get("/api/episodes", isAuthenticated, formidable(), async (req, res) => {
    const serie = await series.findById(req.query.id).populate("episodes");
    if (serie) {
       //sendEpisodes.push(serie.episodes);
-      res.status(200).json(serie.episodes);
+      res.status(200).json(serie);
    } else {
       res.status(400).json({ message: "serie not found" });
    }
