@@ -6,7 +6,11 @@ module.exports = (mongoose, Mongoose) => {
          start_listen_date: Date,
          last_listen_date: Date,
          duration: Number,
-
+         size: String,
+         downloaded: {
+            type: Boolean,
+            default: false,
+         },
          createdAt: Date,
          updatedAt: { type: Date, default: Date.now },
          isTrash: {

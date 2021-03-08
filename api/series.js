@@ -66,8 +66,13 @@ router.get(
    isAuthenticated,
    formidable(),
    async (req, res) => {
-      const serie = await series.find({ hit: true });
-      res.status(200).json(serie);
+      try {
+         const serie = await series.find({ hit: true });
+         res.status(200).json(serie);
+      } catch (error) {
+         console.log(error.message);
+         res.status(400).json({ message: error.message });
+      }
    }
 );
 
@@ -76,8 +81,31 @@ router.get(
    isAuthenticated,
    formidable(),
    async (req, res) => {
-      const serie = await series.find({ hit: true }).populate("episodes");
-      res.status(200).json(serie);
+      try {
+         const serie = await series.find({ hit: true }).populate("episodes");
+         res.status(200).json(serie);
+      } catch (error) {
+         console.log(error.message);
+         res.status(400).json({ message: error.message });
+      }
    }
 );
+
+router.get(
+   "/api/seriesEpisodes",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      const sendEpisodes = [];
+      const serie = await series.findById(req.query.id).populate("episodes");
+      console.log(serie.episodes);
+      if (serie) {
+         sendEpisodes.push(serie);
+         res.status(200).json(sendEpisodes);
+      } else {
+         res.status(400).json({ message: "serie not found" });
+      }
+   }
+);
+
 module.exports = router;

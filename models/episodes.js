@@ -10,6 +10,7 @@ module.exports = (mongoose, Mongoose) => {
          author: String,
          audio: String,
          rating: Number,
+         libInfos: String,
          nbDownload: Number,
          createdAt: Date,
 

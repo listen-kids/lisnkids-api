@@ -351,6 +351,21 @@
       "inverseOf": null,
       "validations": []
     }, {
+      "field": "libInfos",
+      "type": "String",
+      "defaultValue": null,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
       "field": "nbDownload",
       "type": "Number",
       "defaultValue": null,
@@ -499,6 +514,21 @@
       "inverseOf": null,
       "validations": []
     }, {
+      "field": "downloaded",
+      "type": "Boolean",
+      "defaultValue": false,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
       "field": "duration",
       "type": "Number",
       "defaultValue": null,
@@ -561,6 +591,21 @@
     }, {
       "field": "rank",
       "type": "Number",
+      "defaultValue": null,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
+      "field": "size",
+      "type": "String",
       "defaultValue": null,
       "enums": null,
       "integration": null,
@@ -766,6 +811,21 @@
       "validations": []
     }, {
       "field": "image",
+      "type": "String",
+      "defaultValue": null,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
+      "field": "libInfos",
       "type": "String",
       "defaultValue": null,
       "enums": null,

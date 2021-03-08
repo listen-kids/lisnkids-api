@@ -7,6 +7,7 @@ module.exports = (mongoose, Mongoose) => {
          year: String,
          image: String,
          author: String,
+         libInfos: String,
          rating: Number,
          hit: { type: Boolean, default: false },
          //episodes: {
