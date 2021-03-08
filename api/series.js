@@ -91,23 +91,4 @@ router.get(
    }
 );
 
-router.get(
-   "/api/seriesEpisodes",
-   isAuthenticated,
-   formidable(),
-   async (req, res) => {
-      const sendEpisodes = [];
-      const serie = await series.findById(req.query.id).populate("episodes");
-      console.log(serie.episodes);
-      if (serie) {
-         sendEpisodes.push(serie);
-         console.log(serie.episodes);
-         console.log(sendEpisodes);
-         res.status(200).json(sendEpisodes);
-      } else {
-         res.status(400).json({ message: "serie not found" });
-      }
-   }
-);
-
 module.exports = router;
