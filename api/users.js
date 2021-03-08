@@ -32,8 +32,9 @@ router.post(
    async (req, res) => {
       // Search in the BDD.  Does a user have this email address ?
       try {
-         const user = await users.findById(req.fields._id);
-         //.populate("childrens");
+         const user = await users
+            .findById(req.fields._id)
+            .populate("childrens");
          console.log(user);
          if (!user) {
             res.status(409).json({
