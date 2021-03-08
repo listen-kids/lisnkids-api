@@ -54,6 +54,7 @@ router.post(
 router.post("/api/signup", isAuthenticated, formidable(), async (req, res) => {
    try {
       // Search in the BDD.  Does a user have this email address ?
+      console.log(req.fields.email);
       const user = await users.findOne({ email: req.fields.email });
 
       // If ok, return a message and do not proceed with registration

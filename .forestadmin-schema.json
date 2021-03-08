@@ -173,6 +173,44 @@
       "inverseOf": null,
       "validations": []
     }, {
+      "field": "avatar",
+      "type": {
+        "fields": [{
+          "field": "nameAvatar",
+          "type": "String"
+        }, {
+          "field": "daySelected",
+          "type": "String"
+        }, {
+          "field": "dayUnselected",
+          "type": "String"
+        }, {
+          "field": "nightSelected",
+          "type": "String"
+        }, {
+          "field": "nightUnselected",
+          "type": "String"
+        }, {
+          "field": "onlySelected",
+          "type": "String"
+        }, {
+          "field": "onlyUnselected",
+          "type": "String"
+        }]
+      },
+      "defaultValue": null,
+      "enums": null,
+      "integration": null,
+      "isFilterable": true,
+      "isPrimaryKey": false,
+      "isReadOnly": false,
+      "isRequired": false,
+      "isSortable": true,
+      "isVirtual": false,
+      "reference": null,
+      "inverseOf": null,
+      "validations": []
+    }, {
       "field": "createdAt",
       "type": "Date",
       "defaultValue": null,
@@ -203,21 +241,6 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "historic_listens",
-      "type": ["String"],
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": true,
-      "isPrimaryKey": false,
-      "isReadOnly": false,
-      "isRequired": false,
-      "isSortable": true,
-      "isVirtual": false,
-      "reference": "historic_listens._id",
-      "inverseOf": null,
-      "validations": []
-    }, {
       "field": "isActif",
       "type": "Boolean",
       "defaultValue": true,
@@ -233,8 +256,8 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "nameAvatar",
-      "type": "String",
+      "field": "myPlaylists",
+      "type": ["String"],
       "defaultValue": null,
       "enums": null,
       "integration": null,
@@ -244,7 +267,7 @@
       "isRequired": false,
       "isSortable": true,
       "isVirtual": false,
-      "reference": null,
+      "reference": "myPlaylists._id",
       "inverseOf": null,
       "validations": []
     }, {
@@ -441,8 +464,8 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "series",
-      "type": ["String"],
+      "field": "size",
+      "type": "String",
       "defaultValue": null,
       "enums": null,
       "integration": null,
@@ -452,7 +475,7 @@
       "isRequired": false,
       "isSortable": true,
       "isVirtual": false,
-      "reference": "series._id",
+      "reference": null,
       "inverseOf": null,
       "validations": []
     }, {
@@ -504,8 +527,8 @@
     "segments": [],
     "actions": []
   }, {
-    "name": "historic_listens",
-    "nameOld": "historic_listens",
+    "name": "myPlaylists",
+    "nameOld": "myPlaylists",
     "icon": null,
     "integration": null,
     "isReadOnly": false,
@@ -575,7 +598,7 @@
       "validations": []
     }, {
       "field": "id_episodes",
-      "type": "Number",
+      "type": "String",
       "defaultValue": null,
       "enums": null,
       "integration": null,
@@ -621,21 +644,6 @@
     }, {
       "field": "rank",
       "type": "Number",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": true,
-      "isPrimaryKey": false,
-      "isReadOnly": false,
-      "isRequired": false,
-      "isSortable": true,
-      "isVirtual": false,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "size",
-      "type": "String",
       "defaultValue": null,
       "enums": null,
       "integration": null,
@@ -1185,7 +1193,7 @@
     "liana": "forest-express-mongoose",
     "liana_version": "7.0.1",
     "engine": "nodejs",
-    "engine_version": "14.15.4",
+    "engine_version": "12.18.2",
     "orm_version": "5.8.13"
   }
 }
