@@ -141,4 +141,32 @@ router.post(
    }
 );
 
+router.post(
+   "/api/trashEpisodeMyplaylists",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      try {
+         const myplaylist = await myPlaylists.findOne({
+            idEpisodes: req.fields.idEpisode,
+         });
+         if (!myplaylist) {
+            console.log(
+               "episode don't exist for trash of the playlist : " +
+                  req.fields.idEpisode
+            );
+            res.status(409).json({ message: "episode does not exist" });
+         } else {
+            console.log(myplaylist);
+            myplaylist.isTrash = true;
+            await myplaylist.save();
+            res.status(200).json({ message: "ok episode trash" });
+         }
+      } catch (error) {
+         console.log(error.message);
+         res.status(400).json({ message: error.message });
+      }
+   }
+);
+
 module.exports = router;
