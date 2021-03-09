@@ -147,15 +147,9 @@ router.post(
    formidable(),
    async (req, res) => {
       try {
-         const myplaylist = await myPlaylists.findOne({
-            idEpisodes: req.fields.idEpisode,
-         });
+         const myplaylist = await myPlaylists.findById(req.fields.idPlayLists);
          if (!myplaylist) {
-            console.log(
-               "episode don't exist for trash of the playlist : " +
-                  req.fields.idEpisode
-            );
-            res.status(409).json({ message: "episode does not exist" });
+            res.status(409).json({ message: "n°PlayList does not exist" });
          } else {
             console.log(myplaylist);
             myplaylist.isTrash = true;
