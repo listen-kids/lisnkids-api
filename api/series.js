@@ -59,7 +59,7 @@ router.post(
 );
 
 router.get("/api/series", isAuthenticated, formidable(), async (req, res) => {
-    const serie = await series.find().populate("episodes");
+    const serie = await series.find();
     res.status(200).json(serie);
 });
 

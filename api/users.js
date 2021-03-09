@@ -56,7 +56,6 @@ router.post("/api/signup", isAuthenticated, formidable(), async (req, res) => {
         // Search in the BDD.  Does a user have this email address ?
         const user = await users.findOne({ email: req.fields.email });
 
-
         // If ok, return a message and do not proceed with registration
         if (user) {
             res.status(409).json({
@@ -194,6 +193,7 @@ router.post("/api/signin", isAuthenticated, formidable(), async (req, res) => {
                     _id: user._id,
                     token: user.token,
                     account: user.account,
+                    childrens: user.childrens,
                 });
             } else {
                 res.status(401).json({ error: "Unauthorized" });
