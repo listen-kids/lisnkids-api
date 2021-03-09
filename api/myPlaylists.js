@@ -32,29 +32,38 @@ router.post(
          } else {
             if (!serie) {
                res.status(409).json({ message: "serie does not exist" });
+            } else {
+               const rightNow = new Date();
+               if (serie.episodes.length > 0) {
+                  for (i = 0; i < serie.episodes.length; i++) {
+                     const episode = await episodes.findById(serie.episodes[i]);
+                     if (!episode) {
+                        console.log(
+                           "Episode does not exist n° " + serie.episodes[i]
+                        );
+                     } else {
+                        newRank = rightNow.getTime(); // to put the rank last in the list
+
+                        const newMyplaylist = new myPlaylists({
+                           rank: newRank,
+                           idEpisodes: episode.id,
+                           title: episode.title,
+                           image: episode.image,
+                           createdAt: rightNow,
+                        });
+                        await newMyplaylist.save();
+                        await children.myPlaylists.push(newMyplaylist);
+                        await children.save();
+                     }
+                  }
+               }
+
+               const myPlaylistsChild = await childrens
+                  .findById(req.fields.idChildren)
+                  .populate("myPlaylists");
+               res.status(200).json(myPlaylistsChild);
             }
          }
-
-         const rightNow = new Date();
-         if (serie.episodes.length > 0) {
-            for (i = 0; i < serie.episodes.length; i++) {
-               newRank = rightNow.getTime(); // to put the rank last in the list
-
-               const newMyplaylist = new myPlaylists({
-                  rank: newRank,
-                  id_episodes: req.fields.idEpisode,
-                  createdAt: rightNow,
-               });
-               await newMyplaylist.save();
-               await children.myPlaylists.push(newMyplaylist);
-               await children.save();
-            }
-         }
-
-         const myPlaylistsChild = await childrens
-            .findById(req.fields.idChildren)
-            .populate("myPlaylists");
-         res.status(200).json(myPlaylistsChild);
       } catch (error) {
          console.log(error.message);
          res.status(400).json({ message: error.message });
@@ -80,27 +89,27 @@ router.post(
          } else {
             if (!episode) {
                res.status(409).json({ message: "episode does not exist" });
+            } else {
+               const rightNow = new Date();
+               newRank = rightNow.getTime(); // to put the rank last in the list
+
+               const newMyplaylist = new myPlaylists({
+                  rank: newRank,
+                  idEpisodes: episode.id,
+                  title: episode.title,
+                  image: episode.image,
+                  createdAt: rightNow,
+               });
+               await newMyplaylist.save();
+               await children.myPlaylists.push(newMyplaylist);
+               await children.save();
+
+               const myPlaylistsChild = await childrens
+                  .findById(req.fields.idChildren)
+                  .populate("myPlaylists");
+               res.status(200).json(myPlaylistsChild);
             }
          }
-
-         const rightNow = new Date();
-         newRank = rightNow.getTime(); // to put the rank last in the list
-
-         const newMyplaylist = new myPlaylists({
-            rank: newRank,
-            idEpisodes: episode.id,
-            title: episode.title,
-            image: episode.image,
-            createdAt: rightNow,
-         });
-         await newMyplaylist.save();
-         await children.myPlaylists.push(newMyplaylist);
-         await children.save();
-
-         const myPlaylistsChild = await childrens
-            .findById(req.fields.idChildren)
-            .populate("myPlaylists");
-         res.status(200).json(myPlaylistsChild);
       } catch (error) {
          console.log(error.message);
          res.status(400).json({ message: error.message });
