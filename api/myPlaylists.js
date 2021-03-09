@@ -123,12 +123,12 @@ router.post(
    formidable(),
    async (req, res) => {
       try {
-         console.log(req.fields.idChildren, req.fields.idEpisode);
          //check Users
+         console.log(req.fields.idChildren);
          const children = await childrens
             .findById(req.fields.idChildren)
-            .populate("myPlaylists");
-
+            .populate({ path: "myPlaylists", match: { isTrash: false } });
+         console.log(children);
          if (!children) {
             res.status(409).json({ message: "children does not exist" });
          }
