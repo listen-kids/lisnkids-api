@@ -48,7 +48,7 @@ router.post(
 
             const newEpisode = new episodes({
                title: req.fields.title,
-               nameSerie: serie.title,
+               libInfos: serie.title,
                image: result.secur_url,
                duration: req.fields.duration,
                author: req.fields.author,
