@@ -88,6 +88,7 @@ router.post(
                res.status(409).json({ message: "episode does not exist" });
             } else {
                //Check if episode exist in the playlist--------------------------
+               bblock = false;
                if (children.myPlaylists.length > 0) {
                   for (i = 0; i < children.myPlaylists.length; i++) {
                      const playslist = await myPlaylists.findById(
@@ -95,6 +96,7 @@ router.post(
                      );
                      if (playslist) {
                         if (playslist.idEpisodes === req.fields.idEpisode) {
+                           bblock = true;
                            res.status(400).json({
                               message:
                                  "The episode for this child already exists",
@@ -104,22 +106,25 @@ router.post(
                   }
                   //End Check if episode exist in the playlist--------------------------
                }
+               if (bblock === false) {
+                  const newMyplaylist = new myPlaylists({
+                     rank: children.myPlaylists.length + 1,
+                     idEpisodes: episode.id,
+                     title: episode.title,
+                     image: episode.image,
+                     createdAt: new Date(),
+                  });
+                  await newMyplaylist.save();
+                  await children.myPlaylists.push(newMyplaylist);
+                  await children.save();
 
-               const newMyplaylist = new myPlaylists({
-                  rank: children.myPlaylists.length + 1,
-                  idEpisodes: episode.id,
-                  title: episode.title,
-                  image: episode.image,
-                  createdAt: new Date(),
-               });
-               await newMyplaylist.save();
-               await children.myPlaylists.push(newMyplaylist);
-               await children.save();
-
-               const myPlaylistsChild = await childrens
-                  .findById(req.fields.idChildren)
-                  .populate("myPlaylists");
-               res.status(200).json(myPlaylistsChild);
+                  const myPlaylistsChild = await childrens
+                     .findById(req.fields.idChildren)
+                     .populate("myPlaylists");
+                  res.status(200).json(myPlaylistsChild);
+               } else {
+                  res.status(200).json("deja existant");
+               }
             }
          }
       } catch (error) {
