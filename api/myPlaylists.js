@@ -147,7 +147,22 @@ router.post(
             res.status(409).json({ message: "children does not exist" });
          }
 
-         res.status(200).json(children);
+         if (children.myPlaylists.length > 0) {
+            let epiALL = [];
+            for (i = 0; i < children.myPlaylists.length; i++) {
+               if (children.myPlaylists[i].isTrash === false) {
+                  const episode = await episodes.findById(
+                     children.myPlaylists[i].idEpisodes
+                  );
+                  if (episode) {
+                     epiALL.push(episode);
+                  }
+               }
+            }
+
+            res.status(200).json({ data: children, data2: epiALL });
+            //res.status(200).json(children);
+         }
       } catch (error) {
          console.log(error.message);
          res.status(400).json({ message: error.message });
@@ -186,7 +201,7 @@ router.post(
                }
             }
 
-            res.status(200).json({ children, epiALL });
+            res.status(200).json(epiALL);
          } else {
             res.status(400).json("n°PlayList empty");
          }
