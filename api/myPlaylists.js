@@ -155,6 +155,48 @@ router.post(
    }
 );
 
+// list  Episode => myPlayLists
+// idChildren = id of Children
+router.post(
+   "/api/listMyPlaylistEpisode",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      try {
+         //check Users
+
+         const children = await childrens
+            .findById(req.fields.idChildren)
+            .populate({ path: "myPlaylists" });
+
+         if (!children) {
+            res.status(409).json({ message: "children does not exist" });
+         }
+
+         if (children.myPlaylists.length > 0) {
+            let epiALL = [];
+            for (i = 0; i < children.myPlaylists.length; i++) {
+               if (children.myPlaylists[i].isTrash === false) {
+                  const episode = await episodes.findById(
+                     children.myPlaylists[i].idEpisodes
+                  );
+                  if (episode) {
+                     epiALL.push(episode);
+                  }
+               }
+            }
+
+            res.status(200).json(epiALL);
+         } else {
+            res.status(400).json("n°PlayList empty");
+         }
+      } catch (error) {
+         console.log(error.message);
+         res.status(400).json({ message: error.message });
+      }
+   }
+);
+
 // delete Episode od the myPlayLists
 // idChildren = id of Children
 // idPlaylists = id of de la playlists
