@@ -3,7 +3,6 @@ module.exports = (mongoose, Mongoose) => {
       {
          rank: Number,
          title: String,
-         nameSerie: String,
          year: String,
          image: String,
          duration: String,
