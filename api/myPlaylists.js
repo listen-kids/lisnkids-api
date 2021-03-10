@@ -208,7 +208,6 @@ router.post(
 );
 
 //download Episode Myplaylists
-// idChildren = id of Children
 // idPlaylists = id of de la playlists
 router.post(
    "/api/downloadEpisodeMyplaylists",
@@ -217,6 +216,7 @@ router.post(
    async (req, res) => {
       try {
          // trash episode
+
          const myplaylist = await myPlaylists.findById(req.fields.idPlayLists);
          if (!myplaylist) {
             res.status(409).json({ message: "n°PlayList does not exist" });
