@@ -186,7 +186,7 @@ router.post(
                }
             }
 
-            res.status(200).json({ epiALL });
+            res.status(200).json({ children, epiALL });
          } else {
             res.status(400).json("n°PlayList empty");
          }
