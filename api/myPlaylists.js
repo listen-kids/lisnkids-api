@@ -181,22 +181,18 @@ router.post(
             if (!children) {
                res.status(409).json({ message: "children does not exist" });
             } else {
-               if (!episode) {
-                  res.status(409).json({ message: "episode does not exist" });
-               } else {
-                  //Check if episode exist in the playlist
-                  if (children.myPlaylists.length > 0) {
-                     let nbRank = 0;
-                     for (i = 0; i < children.myPlaylists.length; i++) {
-                        const myPlayListUpdate = await myPlaylists.findById(
-                           children.myPlaylists[i]
-                        );
-                        if (myPlayListUpdate) {
-                           if (myPlayListUpdate.isTrash === false) {
-                              nbRank++;
-                              myPlayListUpdate.rank = nbRank;
-                              await myplaylist.save();
-                           }
+               //Check if episode exist in the playlist
+               if (children.myPlaylists.length > 0) {
+                  let nbRank = 0;
+                  for (i = 0; i < children.myPlaylists.length; i++) {
+                     const myPlayListUpdate = await myPlaylists.findById(
+                        children.myPlaylists[i]
+                     );
+                     if (myPlayListUpdate) {
+                        if (myPlayListUpdate.isTrash === false) {
+                           nbRank++;
+                           myPlayListUpdate.rank = nbRank;
+                           await myplaylist.save();
                         }
                      }
                   }
