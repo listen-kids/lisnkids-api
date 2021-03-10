@@ -146,7 +146,7 @@ router.post(
          console.log(req.fields.idChildren);
          const children = await childrens
             .findById(req.fields.idChildren)
-            .populate({ path: "myPlaylists", match: { isTrash: false } });
+            .populate("myPlaylists");
 
          if (!children) {
             res.status(409).json({ message: "children does not exist" });
@@ -180,6 +180,7 @@ router.post(
          }
          if (children.myPlaylists.length > 0) {
             let epiAll = [];
+            let cpt = 0;
             for (i = 0; i < children.myPlaylists.length; i++) {
                if (children.myPlaylists[i].isTrash === false) {
                   const episode = await episodes.findById(
@@ -187,7 +188,9 @@ router.post(
                   );
 
                   if (episode) {
+                     cpt++;
                      console.log(episode);
+                     episode.rank = cpt;
                      epiAll.push(episode);
                   }
                }
