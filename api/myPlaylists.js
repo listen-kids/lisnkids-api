@@ -33,7 +33,6 @@ router.post(
             if (!serie) {
                res.status(409).json({ message: "serie does not exist" });
             } else {
-               const rightNow = new Date();
                if (serie.episodes.length > 0) {
                   for (i = 0; i < serie.episodes.length; i++) {
                      const episode = await episodes.findById(serie.episodes[i]);
@@ -42,14 +41,12 @@ router.post(
                            "Episode does not exist n° " + serie.episodes[i]
                         );
                      } else {
-                        newRank = rightNow.getTime(); // to put the rank last in the list
-
                         const newMyplaylist = new myPlaylists({
-                           rank: newRank,
+                           rank: children.myPlaylists.length + 1,
                            idEpisodes: episode.id,
                            title: episode.title,
                            image: episode.image,
-                           createdAt: rightNow,
+                           createdAt: new Date(),
                         });
                         await newMyplaylist.save();
                         await children.myPlaylists.push(newMyplaylist);
@@ -90,15 +87,30 @@ router.post(
             if (!episode) {
                res.status(409).json({ message: "episode does not exist" });
             } else {
-               const rightNow = new Date();
-               newRank = rightNow.getTime(); // to put the rank last in the list
+               //Check if episode exist in the playlist--------------------------
+               if (children.myPlaylists.length > 0) {
+                  for (i = 0; i < children.myPlaylists.length; i++) {
+                     const playslist = await myPlaylists.findById(
+                        children.myPlaylists[i]
+                     );
+                     if (playslist) {
+                        if (playslist.idEpisodes === req.fields.idEpisode) {
+                           res.status(400).json({
+                              message:
+                                 "The episode for this child already exists",
+                           });
+                        }
+                     }
+                  }
+                  //End Check if episode exist in the playlist--------------------------
+               }
 
                const newMyplaylist = new myPlaylists({
-                  rank: newRank,
+                  rank: children.myPlaylists.length + 1,
                   idEpisodes: episode.id,
                   title: episode.title,
                   image: episode.image,
-                  createdAt: rightNow,
+                  createdAt: new Date(),
                });
                await newMyplaylist.save();
                await children.myPlaylists.push(newMyplaylist);
@@ -117,6 +129,8 @@ router.post(
    }
 );
 
+// list  Episode => myPlayLists
+// idChildren = id of Children
 router.post(
    "/api/listMyPlaylist",
    isAuthenticated,
@@ -128,7 +142,7 @@ router.post(
          const children = await childrens
             .findById(req.fields.idChildren)
             .populate({ path: "myPlaylists", match: { isTrash: false } });
-         console.log(children);
+
          if (!children) {
             res.status(409).json({ message: "children does not exist" });
          }
@@ -141,12 +155,16 @@ router.post(
    }
 );
 
+// delete Episode od the myPlayLists
+// idChildren = id of Children
+// idPlaylists = id of de la playlists
 router.post(
    "/api/trashEpisodeMyplaylists",
    isAuthenticated,
    formidable(),
    async (req, res) => {
       try {
+         // trash episode
          const myplaylist = await myPlaylists.findById(req.fields.idPlayLists);
          if (!myplaylist) {
             res.status(409).json({ message: "n°PlayList does not exist" });
@@ -154,7 +172,37 @@ router.post(
             console.log(myplaylist);
             myplaylist.isTrash = true;
             await myplaylist.save();
-            res.status(200).json({ message: "ok episode trash" });
+
+            // update Rank de la playslist (req)
+
+            //check Users
+            const children = await childrens.findById(req.fields.idChildren);
+
+            if (!children) {
+               res.status(409).json({ message: "children does not exist" });
+            } else {
+               if (!episode) {
+                  res.status(409).json({ message: "episode does not exist" });
+               } else {
+                  //Check if episode exist in the playlist
+                  if (children.myPlaylists.length > 0) {
+                     let nbRank = 0;
+                     for (i = 0; i < children.myPlaylists.length; i++) {
+                        const myPlayListUpdate = await myPlaylists.findById(
+                           children.myPlaylists[i]
+                        );
+                        if (myPlayListUpdate) {
+                           if (myPlayListUpdate.isTrash === false) {
+                              nbRank++;
+                              myPlayListUpdate.rank = nbRank;
+                              await myplaylist.save();
+                           }
+                        }
+                     }
+                  }
+               }
+               res.status(200).json({ message: "ok episode trash" });
+            }
          }
       } catch (error) {
          console.log(error.message);
