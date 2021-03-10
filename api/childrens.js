@@ -104,7 +104,7 @@ router.post(
          if (!child) {
             res.status(409).json({ message: "child does not exist" });
          } else {
-            res.status(400).json(child);
+            res.status(200).json(child);
          }
       } catch (error) {
          console.log(error.message);

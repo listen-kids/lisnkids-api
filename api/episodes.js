@@ -21,6 +21,26 @@ const isAuthenticated = (req, res, next) => {
    }
 };
 
+// Route Update Children
+router.post(
+   "/api/infoEpisode",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      try {
+         const episode = await episodes.findById(req.fields.idEpisode);
+         if (!episode) {
+            res.status(409).json({ message: "episode does not exist" });
+         } else {
+            res.status(200).json(episode);
+         }
+      } catch (error) {
+         console.log(error.message);
+         res.status(400).json({ message: error.message });
+      }
+   }
+);
+
 router.post(
    "/api/add_episode",
    isAuthenticated,
