@@ -212,7 +212,7 @@ router.post(
             }
             res.status(200).json(epiAll);
          } else {
-            res.status(400).json("n°PlayList empty");
+            res.status(200).json("PlayList vide");
          }
       } catch (error) {
          console.log(error.message);
