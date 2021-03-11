@@ -91,16 +91,31 @@ router.post(
                bblock = false;
                if (children.myPlaylists.length > 0) {
                   for (i = 0; i < children.myPlaylists.length; i++) {
+                     //search Playlist
                      const playslist = await myPlaylists.findById(
                         children.myPlaylists[i]
                      );
                      if (playslist) {
+                        //Playlist ok
+
                         if (playslist.idEpisodes === req.fields.idEpisode) {
+                           // blocage Securite
                            bblock = true;
-                           res.status(400).json({
-                              message:
-                                 "The episode for this child already exists",
-                           });
+
+                           // check if episode in the playlist isTrash=true we change at false
+                           if (playslist.isTrash === true) {
+                              playslist.isTrash = false;
+                              await playslist.save();
+                              res.status(200).json({
+                                 message:
+                                    "The episode change the state isTrash at false",
+                              });
+                           } else {
+                              res.status(200).json({
+                                 message:
+                                    "The episode for this child already exists",
+                              });
+                           }
                         }
                      }
                   }
