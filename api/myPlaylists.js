@@ -298,4 +298,39 @@ router.post(
    }
 );
 
+//download Episode Myplaylists
+// idPlaylists = id of de la playlists
+router.post(
+   "/api/downloadEpisodeAllChildren",
+   isAuthenticated,
+   formidable(),
+   async (req, res) => {
+      try {
+         //check Users
+         const children = await childrens.findById(req.fields.idChildren);
+
+         if (!children) {
+            res.status(409).json({ message: "children does not exist" });
+         } else {
+            //Check if episode exist in the playlist
+            if (children.myPlaylists.length > 0) {
+               for (i = 0; i < children.myPlaylists.length; i++) {
+                  const myPlayListUpdate = await myPlaylists.findById(
+                     children.myPlaylists[i]
+                  );
+                  if (myPlayListUpdate) {
+                     myPlayListUpdate.downloaded = true;
+                     await myPlayListUpdate.save();
+                  }
+               }
+            }
+            res.status(200).json({ message: "ok episodes trash" });
+         }
+      } catch (error) {
+         console.log(error.message);
+         res.status(400).json({ message: error.message });
+      }
+   }
+);
+
 module.exports = router;
